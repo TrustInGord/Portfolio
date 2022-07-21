@@ -1,4 +1,5 @@
-## This is part of a process of extracting zip file contents to specific folders so that an Excel dashboard can use that information.
+## This is a PowerShell script. This is part of a process of extracting zip file contents to specific folders 
+## So that an Excel dashboard can use that information.
 ## We use an array of names, a loop, and archive location.
 
 cd ".\Downloads"
