@@ -1,4 +1,4 @@
-#This is a Python script that first takes a value from
+#This is a Python script that first takes a value from an Excel workbook and posts it to twitter.
 
 from openpyxl import Workbook, load_workbook
 from selenium import webdriver
