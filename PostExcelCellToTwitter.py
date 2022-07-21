@@ -1,4 +1,5 @@
 #This is a Python script that first takes a value from an Excel workbook and posts it to twitter.
+#It uses Python and Selenium to web crawl
 
 from openpyxl import Workbook, load_workbook
 from selenium import webdriver
