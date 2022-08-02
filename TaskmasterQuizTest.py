@@ -26,7 +26,7 @@ if answer.lower()=='yes':
     else:
         print('Wrong Answer :(')
  
-print('Taskmaster Home quiz game, you attempted',score,"questions correctly!")
-mark=(score/total_questions)*100
-print('Marks obtained:',mark)
+print('Taskmaster Home quiz game, you attempted: ',score," questions correctly!")
+mark=(score/total_questions) * 100
+print('Points obtained:',mark)
 print('BYE!')
