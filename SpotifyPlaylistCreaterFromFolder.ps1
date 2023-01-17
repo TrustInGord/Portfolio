@@ -1,41 +1,33 @@
-$dir = "C:\path\to\folder"
-$outFile = "C:\path\to\songlist.txt"
+# Spotify API endpoint
+$authEndpoint = "https://accounts.spotify.com/api/token"
 
-# Get a list of all MP3 files in the directory
-$mp3Files = Get-ChildItem $dir -Filter "*.mp3"
+# Spotify client ID and secret
+$clientId = "your_client_id"
+$clientSecret = "your_client_secret"
 
-# Open the output file for writing
-$out = [System.IO.StreamWriter] $outFile
+# Request an access token
+$encodedAuth = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("$($clientId):$($clientSecret)"))
+$authResponse = Invoke-RestMethod -Method POST -Uri $authEndpoint -Headers @{Authorization = "Basic $encodedAuth"} -ContentType "application/x-www-form-urlencoded" -Body "grant_type=client_credentials"
 
-# Write the names of the MP3 files to the file
-foreach ($file in $mp3Files) {
-    $out.WriteLine($file.Name)
-}
-
-# Close the output file
-$out.Close()
-
-# Replace YOUR_CLIENT_ID and YOUR_CLIENT_SECRET with your actual client ID and secret
-$clientId = "YOUR_CLIENT_ID"
-$clientSecret = "YOUR_CLIENT_SECRET"
-
-# The ID of the playlist you want to add songs to
-$playlistId = "YOUR_PLAYLIST_ID"
-
-# The file containing the list of song names
-$songListFile = "C:\path\to\songlist.txt"
-
-# Read the list of song names from the file
-$songList = Get-Content $songListFile
-
-# Get an access token to authenticate the request
-$authResponse = Invoke-RestMethod -Method Post -Uri "https://accounts.spotify.com/api/token" -ContentType "application/x-www-form-urlencoded" -Body "grant_type=client_credentials" -Headers @{"Authorization"="Basic $( [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($clientId + ':' + $clientSecret)))" }
+# Get the access token
 $accessToken = $authResponse.access_token
+$userId = $authResponse.user_id
 
-# Add the songs to the playlist
-foreach ($song in $songList) {
-    $response = Invoke-RestMethod -Method Post -Uri "https://api.spotify.com/v1/playlists/$playlistId/tracks?uris=spotify:track:$song" -Headers @{"Authorization"="Bearer $accessToken"}
-    if ($response.error -ne $null) {
-        Write-Output "Error adding song: $song"
-    }
+# Read musiclist.txt file
+$musiclist = Get-Content -Path "C:\path\to\musiclist.txt"
+
+# Create a new playlist
+$playlistName = "My MP3 Playlist"
+$playlistDescription = "A playlist created from my MP3 files"
+$playlist = Invoke-RestMethod -Method Post -Uri "https://api.spotify.com/v1/users/$userId/playlists" -Body (@{name=$playlistName;description=$playlistDescription} | ConvertTo-Json) -Headers @{Authorization = "Bearer $accessToken"}
+
+foreach($line in $musiclist){
+    # Split the line into an array
+    $songInfo = $line -split " - "
+    $artist = $songInfo[0]
+    $songTitle = $songInfo[1]
+    # Search for the track on Spotify
+    $track = Invoke-RestMethod -Method GET -Uri "https://api.spotify.com/v1/search?q=artist:$artist%20track:$songTitle&type=track" -Headers @{Authorization = "Bearer $accessToken"}
+    # Add the track to the new playlist
+    Invoke-RestMethod -Method Post -Uri "https://api.spotify.com/v1/playlists/$($playlist.id)/tracks?uris=$($track.tracks.items[0].uri)" -Headers @{Authorization = "Bearer $accessToken"}
 }
