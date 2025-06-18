@@ -48,7 +48,7 @@ def main():
         return
     print("\nLook passed the duplicates and find the secret word")
     print("\nGuess the secret 4-letter word hidden in this grid:")
-    print(secret_word)
+    ##print(secret_word)
     print_grid(grid)
 
     guess = input("\nYour guess: ").strip().upper()
