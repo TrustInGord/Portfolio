@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>4Score</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .grid { display: inline-grid; grid-template-columns: repeat(8, 40px); gap: 2px; margin: 20px; }
+        .cell { width: 40px; height: 40px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
+        .cell.red { background-color: red; color: white; }
+        .cell.green { background-color: green; color: white; }
+        input { padding: 10px; font-size: 16px; margin: 10px; }
+        button { padding: 10px 20px; font-size: 16px; }
+        .timer { font-size: 20px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>4Score</h1>
+    <div class="timer">Time: <span id="time">0</span>s</div>
+    <div class="grid" id="grid"></div>
+    <div>
+        <input type="text" id="guess" placeholder="Enter your word" maxlength="10">
+        <button onclick="submitGuess()">Submit</button>
+    </div>
+    <div id="result"></div>
+    <button id="startBtn" onclick="startGame()">Start to Play</button>
+    <button id="newBtn" onclick="newGame()" style="display:none;">New Game</button>
+    <button id="revealBtn" onclick="revealSecret()" style="display:none;">Reveal Secret</button>
+    <div id="secret" style="margin-top: 20px; color: #666;"></div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
